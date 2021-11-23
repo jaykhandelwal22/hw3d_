@@ -1,8 +1,22 @@
 #pragma once
 #include"HWin.h"
+#include"CException.h"
 
 class Window
 {
+public:
+	class Exception : public CException
+	{
+	public:
+		Exception(int line, const char* file, HRESULT hr) noexcept;
+		const char* what() const noexcept override;
+		 const char* GetType() const noexcept override;
+		static std::string TranslateErrorCode(HRESULT hr) noexcept;
+		HRESULT GetErrorCode() const noexcept;
+		std::string GetErrorString() const noexcept;
+	private:
+		HRESULT hr;
+	};
 
 private:
 	class WindowClass
@@ -37,3 +51,4 @@ private:
 
 };
 
+#define CHWND_EXCEPT( hr ) Window::Exception( __LINE__,__FILE__,hr )
